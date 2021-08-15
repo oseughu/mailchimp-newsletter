@@ -1,5 +1,6 @@
 const express = require("express");
 const mailchimp = require("@mailchimp/mailchimp_marketing");
+const port = process.env.PORT || 3000;
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -37,7 +38,8 @@ app.post("/", async (req, res) => {
 
       res.sendFile(`${__dirname}/public/success.html`);
       console.log(
-        `Successfully added contact as an audience member. The contact's id is ${response.id}.`
+        `Successfully added ${subscribingUser.firstName} ${subscribingUser.lastName} as an audience member. 
+        The contact's id is ${response.id}.`
       );
     } catch (error) {
       res.status(400).sendFile(`${__dirname}/public/failure.html`);
@@ -51,7 +53,7 @@ app.post("/failure", function (req, res) {
   res.redirect("/");
 });
 
-app.listen(process.env.PORT || 3000, function () {
+app.listen(port, function () {
   console.log("Server is running on port 3000.");
 });
 
