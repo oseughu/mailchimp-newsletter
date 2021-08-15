@@ -1,8 +1,5 @@
 const express = require("express");
-const https = require("https");
 const mailchimp = require("@mailchimp/mailchimp_marketing");
-const { response } = require("express");
-const { ServerResponse } = require("http");
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -17,7 +14,7 @@ app.get("/", function (req, res) {
   res.sendFile(`${__dirname}/public/signup.html`);
 });
 
-app.post("/", function (req, res) {
+app.post("/", async (req, res) => {
   const listId = "2fdcb0eee8";
   const subscribingUser = {
     firstName: req.body.fName,
@@ -25,29 +22,33 @@ app.post("/", function (req, res) {
     email: req.body.email,
   };
 
-  async function run() {
-    const response = await mailchimp.lists.addListMember(listId, {
-      email_address: subscribingUser.email,
-      status: "subscribed",
-      merge_fields: {
-        FNAME: subscribingUser.firstName,
-        LNAME: subscribingUser.lastName,
-        ADDRESS: subscribingUser.email,
-      },
-    });
+  const addListMember = async () => {
+    try {
+      const response = await mailchimp.lists.addListMember(listId, {
+        email_address: subscribingUser.email,
+        status: "subscribed",
+        email_type: "html",
+        merge_fields: {
+          FNAME: subscribingUser.firstName,
+          LNAME: subscribingUser.lastName,
+          ADDRESS: subscribingUser.email,
+        },
+      });
 
-    console.log(
-      `Successfully added contact as an audience member. The contact's id is ${response.id}.`
-    );
-  }
+      res.sendFile(`${__dirname}/public/success.html`);
+      console.log(
+        `Successfully added contact as an audience member. The contact's id is ${response.id}.`
+      );
+    } catch (error) {
+      res.status(400).sendFile(`${__dirname}/public/failure.html`);
+    }
+  };
 
-  run();
+  addListMember();
+});
 
-  if (res.statusCode === 200) {
-    res.sendFile(`${__dirname}/public/success.html`);
-  } else {
-    res.sendFile(`${__dirname}/public/failure.html`);
-  }
+app.post("/failure", function (req, res) {
+  res.redirect("/");
 });
 
 app.listen(process.env.PORT || 3000, function () {
