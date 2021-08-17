@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
         integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
     <link rel="icon" href="images\favicon.ico" type="image/x-icon">
-    <link href="css\signup.css" rel="stylesheet">
+    <link href="css\styles.css" rel="stylesheet">
     <title>Newsletter Signup</title>
 </head>
 
@@ -17,10 +17,10 @@
     <form action="/" class="form-signin" method="POST">
         <img class="mb-4" src="images\Ninja-PNG-Image.png" alt="" width="72" height="72">
         <h1 class="h3 mb-3 font-weight-normal">Sign Up To My Newsletter!</h1>
-         
+
         <!-- Regex pattern to ensure no special characters (except a hyphen) are entered into the name fields -->
         <input type="text" class="form-control top" name="fName" pattern="^((?!_)[A-Za-z0-9-])+$"
-            title="Unsupported character detected. Please try again." placeholder="First Name" required autofocus> 
+            title="Unsupported character detected. Please try again." placeholder="First Name" required autofocus>
 
         <input type="text" class="form-control middle" name="lName" pattern="^((?!_)[A-Za-z0-9-])+$"
             title="Unsupported character detected. Please try again." placeholder="Last Name" required>

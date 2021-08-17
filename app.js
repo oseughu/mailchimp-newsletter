@@ -1,22 +1,31 @@
+// Require express and create an express application instance
 const express = require("express");
+const app = express();
+
+// Require mailchimp marketing npm package
 const mailchimp = require("@mailchimp/mailchimp_marketing");
+
+// Define the hostname and port where the server can be found
 const port = process.env.PORT || 3000;
 
-const app = express();
-app.use(express.urlencoded({ extended: true })); // body-parser to parse html fomr data (included wuth express)
-app.use(express.static("public")); //enables access to all other static files needed for the website
+// Define the directory where static files are found
+app.use(express.static("public"));
 
 mailchimp.setConfig({
   apiKey: "02ad999fc0bdc66690df48fe03474c66-us10",
   server: "us10",
 });
 
-app.get("/", function (req, res) {
-  res.sendFile(`${__dirname}/public/signup.html`);
+app.use(express.urlencoded({ extended: true }));
+
+// Route that serves index.html
+app.get("/", (req, res) => {
+  // Send a response to the client with the index.html file
+  res.sendFile(`${__dirname}/public/index.html`);
 });
 
 app.post("/", async (req, res) => {
-  const listId = "2fdcb0eee8";
+  const listId = "2fdcb0eee8"; // List ID can be retrieved from your mailchimp dashboard
   const subscribingUser = {
     firstName: req.body.fName, //html form data
     lastName: req.body.lName,
@@ -39,8 +48,7 @@ app.post("/", async (req, res) => {
 
       res.sendFile(`${__dirname}/public/success.html`); //success page passed if user email isn't already subscribed
       console.log(
-        `Successfully added ${subscribingUser.firstName} ${subscribingUser.lastName} as an audience member. 
-        The contact's id is ${response.id}.`
+        `Successfully added ${subscribingUser.firstName} ${subscribingUser.lastName} as an audience member. The contact's id is ${response.id}.`
       );
     } catch (error) {
       res.status(400).sendFile(`${__dirname}/public/failure.html`); //failure page passed if user email is already subscribed or if the request fails
@@ -51,13 +59,11 @@ app.post("/", async (req, res) => {
 });
 
 app.post("/failure", function (req, res) {
-  res.redirect("/"); //"Try Again!" button redirects to the home route (signup.html)
+  res.redirect("/"); //"Try Again!" button redirects to the home route (index.html)
 });
 
-app.listen(port, function () {
-  console.log(`Server is running on port ${port}.`);
+// Begin accepting connections to the specified port
+app.listen(port, () => {
+  // Display server location information to the console
+  console.log(`Server is listening on port ${port}`);
 });
-
-//api key - 02ad999fc0bdc66690df48fe03474c66-us10
-
-//list id - 2fdcb0eee8 (can be retrieved from your mailchimp dashboard)
