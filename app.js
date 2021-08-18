@@ -19,6 +19,7 @@ mailchimp.setConfig({
 // Define the directory where static files are found
 app.use(express.static("public"));
 
+// body-parser to parse html form data (included wuth express)
 app.use(express.urlencoded({ extended: true }));
 
 // Route that serves index.html
